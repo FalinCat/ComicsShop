@@ -2,7 +2,7 @@
 
 namespace BLL.Services.Interfaces
 {
-    public interface ITagService : IService<Tag>
+    public interface IComicsService : IService<Comics>
     {
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -7,11 +8,13 @@ using System.Threading.Tasks;
 
 namespace BLL.Repositories.Interfaces
 {
-    public interface IRepository<T>
+    public interface IRepository<T> where T : BaseModel
     {
-        void Add(T entity);
+        T Add(T entity);
 
-        void Edit(T entity);
+        bool Edit(T entity);
+
+        bool Delete(T entity);
 
         List<T> GetAll();
 
@@ -20,5 +23,7 @@ namespace BLL.Repositories.Interfaces
         T FindOne(Expression<Func<T, bool>> filter = null);
 
         List<T> FindMany(Expression<Func<T, bool>> filter = null);
+
+        //bool Delete(T enity);
     }
 }

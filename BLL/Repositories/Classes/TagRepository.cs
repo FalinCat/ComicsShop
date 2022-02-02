@@ -10,44 +10,85 @@ namespace BLL.Repositories.Classes
 {
     public class TagRepository : ITagRepository
     {
-        public void Add(Tag entity)
+        public Tag Add(Tag tag)
         {
-            FakeDBContext.Tags.Add(entity);
+            FakeDBContext.Tags.Add(tag);
+            return (Tag)tag.Clone();
         }
 
-        // ToDo
-        public void Edit(Tag entity)
+        public bool Delete(Tag entity)
         {
-            throw new NotImplementedException();
-        }
-
-        // ToDo
-        public Tag FindByName(string name)
-        {
-            return FakeDBContext.Tags.FirstOrDefault(x=>x.Name == name);
-        }
-
-        // ToDo
-        public List<Tag> FindMany(Expression<Func<Tag, bool>> filter = null)
-        {
-            if ( filter!= null )
+            var tagLink = FakeDBContext.Tags.FirstOrDefault(t => t.Id == entity.Id);
+            if (tagLink == null)
             {
-                return FakeDBContext.Tags.Where(filter.Compile()).ToList();
+                return false;
+            }
+            return FakeDBContext.Tags.Remove(tagLink);
+        }
+
+        public bool Edit(Tag tag)
+        {
+            var tagLink = FakeDBContext.Tags.FirstOrDefault(t => t.Id == tag.Id);
+            if (tagLink != null)
+            {
+                var index = FakeDBContext.Tags.IndexOf(tagLink);
+                FakeDBContext.Tags[index] = tag;
+
+                return true;
             }
 
-            return FakeDBContext.Tags;
+            return false;
         }
 
-        // ToDo
+
+        public Tag FindByName(string name)
+        {
+            var tagLink = FakeDBContext.Tags.FirstOrDefault(x => x.Name == name);
+            if (tagLink == null)
+            {
+                return null;
+            }
+            return (Tag)tagLink.Clone();
+        }
+
+
+        public List<Tag> FindMany(Expression<Func<Tag, bool>> filter = null)
+        {
+            var tagList = new List<Tag>();
+            if (filter != null)
+            {
+                foreach (var tag in FakeDBContext.Tags.Where(filter.Compile()))
+                {
+                    tagList.Add((Tag)tag.Clone());
+                }
+            }
+
+            return tagList;
+        }
+
+        
         public Tag FindOne(Expression<Func<Tag, bool>> filter = null)
         {
-            throw new NotImplementedException();
+            if (filter != null)
+            {
+                var tag = FakeDBContext.Tags.Where(filter.Compile()).FirstOrDefault();
+                if (tag != null)
+                    return (Tag)tag.Clone();
+            }
+
+            return null;
         }
 
-        // ToDo
+        
         public List<Tag> GetAll()
         {
-            throw new NotImplementedException();
+            var tagList = new List<Tag>();
+            foreach (var tag in FakeDBContext.Tags)
+            {
+                tagList.Add((Tag)tag.Clone());
+            }
+
+            return tagList;
         }
     }
 }
